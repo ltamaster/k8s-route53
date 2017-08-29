@@ -8,12 +8,16 @@ EVALUATE_TARGET_HEALTH="${EVALUATE_TARGET_HEALTH:-true}"
 FQDN=$(echo "$FQDN" | sed 's|\.*$|.|')
 
 # Get the hosted zone ID for the requested FQDN
-HOSTED_ZONE_ID=$(aws route53 list-hosted-zones | \
+
+
+GET_HOSTED_ZONE_ID=$(aws route53 list-hosted-zones | \
   jq -r --arg FQDN "$FQDN" '.HostedZones | map(select(.Name | inside($FQDN))) | max_by(.Name | length) | .Id | ltrimstr("/hostedzone/")')
 if [[ -z "$HOSTED_ZONE_ID" || "$HOSTED_ZONE_ID" == 'null' ]]; then
   echo "Failed to get route53 hosted zone ID for $FQDN"
   exit 1
 fi
+
+HOSTED_ZONE_ID="${HOSTED_ZONE_ID:-$GET_HOSTED_ZONE_ID}"
 
 # Get the AWS Region
 REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
