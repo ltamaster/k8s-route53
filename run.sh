@@ -72,7 +72,7 @@ CHANGE_BATCH="{
         \"Type\": \"A\",
         \"AliasTarget\": {
           \"HostedZoneId\": \"$ELB_HOSTED_ZONE_ID\",
-          \"DNSName\": \"$ELB_DNS\",
+          \"DNSName\": \"dualstack.$ELB_DNS\",
           \"EvaluateTargetHealth\": $EVALUATE_TARGET_HEALTH
         }
       }
